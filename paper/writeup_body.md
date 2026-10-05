@@ -64,8 +64,9 @@ identical chain of ≥10 calls and 12 contain ≥30. In the strongest case the c
 the trace's total is 200. Inside failing tasks, up to 34.6 % of all tool calls are spent in the
 single longest chain (18-task analyzer arm: 113 of 327 calls). Two mechanism-specific patterns
 appear: (a) *submit-spinning* — `submit_patch()` called with an empty argument object dozens of
-times in a row (74, 64, 56, 54 … calls on 11 tasks) after a rejection; and (b) *grep-spinning* —
-the same `git grep` re-issued identically up to 73 times.
+times in a row after a rejection (chains of 74, 64, 56, 54, 54 and 53 calls on six tasks, 11 in
+total); and (b) *command-spinning* — the same search command re-issued identically, at most 73
+times.
 
 *3.2 Rule 2 — A stop-loss rule removes spinning but does not buy accuracy.* Adding explicit
 "never repeat a call with the same arguments" instructions plus staged deadlines cut the *mean*
