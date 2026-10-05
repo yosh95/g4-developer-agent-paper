@@ -1,9 +1,5 @@
-
-# Every Tool Call Is a Token You Cannot Buy Back
-
-### Nine design rules we measured — and mostly falsified — while building a single-model SWE agent on consumer hardware
-
 **Abstract**
+
 Coding agents are usually improved by adding inference, context, or a larger model. We instead
 study the *cost structure* of a single small model (Gemma 4 31B, INT4 QAT) fixing real bugs from
 an offline SWE-bench-shaped benchmark, on a 4-core/3.7 GB CPU-only machine, by replaying the
@@ -14,13 +10,13 @@ tool budget of failing tasks is burned inside a single identical chain. (2) *Sub
 delegation to the same model is not free and was not beneficial*: on a paired 18-task set the
 single-agent configuration passed 12/18 versus 6/18 with a delegated analyzer (McNemar exact
 p = 0.070); no task failed for lack of analysis, and one delegate spent 82 of 100 tool calls.
-(3) *Public-task scores do not transfer*: our configuration that scores 34.5 % locally scores
-3/58 on the hidden board (1/6.6), while an independent team's 28 % local becomes 4/58 (1/4) —
-a public task is worth roughly one fifth of a hidden task. We convert these into nine
+(3) *Public-task scores do not transfer*: our local 34.5 % becomes 3/58 on the hidden board, a
+transfer ratio near 1/5, matching an independent team's 28 % → 4/58. We convert these into nine
 falsified-or-measured design rules and one reusable artifact: the local replay harness that
 turns a public Kaggle competition into a fully offline benchmark.
 
 **1. Introduction**
+
 The pitch of this competition is that a model that fits on one accelerator should be able to
 navigate a large repository and fix a real bug. Our setup makes that claim concrete and
 adversarial: no GPU, 3.7 GB of RAM, a single 31B INT4 model served by an OpenAI-compatible
@@ -40,6 +36,7 @@ We organise the paper around nine rules, each of which was either measured or fa
 All numbers come from runs recorded in the accompanying open log; no result here is estimated.
 
 **2. Method**
+
 *Task suite.* 55 tasks from the competition's public task file (37 fastapi, 9 rich, 8 requests,
 1 httpx), with their repository snapshots at the base commit. Tasks whose snapshot is not
 reachable offline are excluded.
@@ -139,55 +136,67 @@ per-task guard with a hard wall-clock and orphan reaping. We stress this because
 reproduce it" is, in our experience, the most common source of false negative results in agent
 research.
 
-
 **4. Related Work**
+
 Coding-agent evaluation has advanced largely by scaling models and inference budgets, most
-visibly through repository-level benchmarks and their scaffolded agents [1,2] and through
-deliberately scaffold-free pipelines that isolate where the gain comes from [3]. Scaffolds are
-in turn built out of reasoning and self-critique loops [4,5] and multi-agent conversations [6];
+visibly through repository-level benchmarks and their scaffolded agents \[1,2] and through
+deliberately scaffold-free pipelines that isolate where the gain comes from \[3]. Scaffolds are
+in turn built out of reasoning and self-critique loops \[4,5] and multi-agent conversations \[6];
 the Gemma family provides the open weights that make small-model agents runnable on consumer
-hardware [7]. Our contribution is orthogonal to all of these: a *cost-accounting* methodology
+hardware \[7]. Our contribution is orthogonal to all of these: a *cost-accounting* methodology
 for fixed inference. Where the above work asks "which scaffold is best" under a growing budget,
 we hold the budget fixed and ask where it actually goes, and we treat the local-vs-hidden
 transfer ratio as a measured quantity rather than an assumption. Repository-graph retrieval is a
-main thread of the host competition [8]; we measure that a lexical/graph localizer places the
+main thread of the host competition \[8]; we measure that a lexical/graph localizer places the
 gold file in the top 5 for 14/18 tasks (77.8 %) and first for 9/18 (50 %), yet those tasks still
 fail downstream (edit, stop, submit) — which separates *localisation quality* from *resolution
 rate*.
 
 **References**
-[1] C. E. Jimenez et al. SWE-bench: Can Language Models Resolve Real-World GitHub Issues?
-    arXiv:2310.06770, 2023.
-[2] J. Yang et al. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering.
-    arXiv:2405.15793, 2024.
-[3] C. S. Xia et al. Agentless: Demystifying LLM-based Software Engineering Agents.
-    arXiv:2407.01489, 2024.
-[4] S. Yao et al. ReAct: Synergizing Reasoning and Acting in Language Models.
-    arXiv:2210.03629, 2022.
-[5] N. Shinn et al. Reflexion: Language Agents with Verbal Reinforcement Learning.
-    arXiv:2303.11366, 2023.
-[6] Q. Wu et al. AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation.
-    arXiv:2308.08155, 2023.
-[7] Gemma Team, Google DeepMind. Gemma technical report / model cards, 2024-2026.
-[8] Google DeepMind. The Gemma 4 Developer Agent Competition (Kaggle, 2026): public task
-    suite (129 tasks), repository snapshots, code graphs and embeddings, and the official
-    evaluation harness.
+
+\[1] C. E. Jimenez et al. SWE-bench: Can Language Models Resolve Real-World GitHub Issues?
+arXiv:2310.06770, 2023.
+
+\[2] J. Yang et al. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering.
+arXiv:2405.15793, 2024.
+
+\[3] C. S. Xia et al. Agentless: Demystifying LLM-based Software Engineering Agents.
+arXiv:2407.01489, 2024.
+
+\[4] S. Yao et al. ReAct: Synergizing Reasoning and Acting in Language Models.
+arXiv:2210.03629, 2022.
+
+\[5] N. Shinn et al. Reflexion: Language Agents with Verbal Reinforcement Learning.
+arXiv:2303.11366, 2023.
+
+\[6] Q. Wu et al. AutoGen: Enabling Next-Gen LLM Applications via Multi-Agent Conversation.
+arXiv:2308.08155, 2023.
+
+\[7] Gemma Team, Google DeepMind. Gemma technical report / model cards, 2024-2026.
+
+\[8] Google DeepMind. The Gemma 4 Developer Agent Competition (Kaggle, 2026): public task
+suite (129 tasks), repository snapshots, code graphs and embeddings, and the official
+evaluation harness.
 
 **5. Limitations**
-Single model family and quantisation; one benchmark family; 55 of ~129 public tasks; the hidden
+
+Single model family and quantisation; one benchmark family; 55 of \~129 public tasks; the hidden
 board is small (58 tasks, so one task = 1.7 points, and our k = 4 vs k = 3 is a two-sided
 difference of 0.03, i.e. within noise); local serving is faster than the hosted accelerator in
 some configurations and slower in others, so wall-clock findings are indicative, not
 transferable. We report paired comparisons precisely because absolute numbers are not.
 
 **6. Conclusion**
+
 Building a small SWE agent is mostly not a reasoning problem; it is a resource-allocation and
 measurement problem. The cheapest reliable gains came from removing machinery (a delegated
 analyzer), not adding it; the largest honest gains would require a capability this hardware
 cannot host. We offer the nine rules, the falsifications, and the offline replay harness, so
 that the next attempt starts from a smaller search space.
 
-**Appendix / Artifacts.** Per-task outcomes for every arm (`task_outcomes.csv`), trace-derived
+**Appendix / Artifacts.**
+
+Per-task outcomes for every arm (`task_outcomes.csv`), trace-derived
 spin statistics (`spin_stats.json`), and the replay driver with its provisioning and guard
 modules are released with this writeup under Apache-2.0. Competition context:
 https://www.kaggle.com/competitions/gemma-4-developer-agent

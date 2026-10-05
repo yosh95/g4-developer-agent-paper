@@ -74,10 +74,12 @@ times in a row (74, 64, 56, 54 … calls on 11 tasks) after a rejection; and (b)
 the same `git grep` re-issued identically up to 73 times.
 
 *3.2 Rule 2 — A stop-loss rule removes spinning but does not buy accuracy.* Adding explicit
-"never repeat a call with the same arguments" instructions plus staged deadlines reduced the
-longest chains from 22–333 calls to 0–2 in the earlier generation, and the mean call count fell
-from 58 to 39 on the paired 18 tasks. Accuracy rose (11 → 12), but by less than the noise
-(±2 tasks). We therefore treat spinning as an *efficiency* finding, not an accuracy finding — a
+"never repeat a call with the same arguments" instructions plus staged deadlines cut the *mean*
+longest identical chain on the paired 18 tasks from 16.9 calls to 3.2, and the mean call count
+from 58 to 39 — a 29 % reduction in total tool calls with no accuracy change (11 → 12, inside
+the ±2-task noise). The reduction is visible in the distribution rather than in the mean alone:
+under the previous generation 9 of the same 18 tasks contained a chain ≥10 calls, versus 2 after
+the change. We therefore treat spinning as an *efficiency* finding, not an accuracy finding — a
 sharpening of the common claim that agents loop, with a number attached.
 
 *3.3 Rule 3 — Delegating to a second agent of the same model is a bad trade.* On the same 18
@@ -120,11 +122,12 @@ Generalisation claims should therefore be reported per family; a headline number
 spread.
 
 *3.8 Rule 8 — Public-task scores do not transfer to hidden tasks, and the ratio is measurable.*
-On the hidden board every distinct public score is exactly floor(k/58): the board is 58 tasks.
-Our best configuration reaches k = 4 (0.06); the same configuration scores 19/55 = 34.5 %
-locally. Another team, on the same public suite, reports 28 % locally and k = 4 → 6.9 %. Two
-independent measurements therefore agree on a transfer ratio of roughly one fifth, i.e. about
-five public tasks are worth one hidden task. We suggest the ratio is a property of *task
+On the hidden board every distinct public score is exactly floor(k/58): the board is 58 tasks,
+so one task is 1.7 points. Our most extensively measured configuration solves 19/55 = 34.5 %
+of public tasks and 3/58 = 5.2 % of hidden ones (ratio 1/6.6); an earlier configuration of ours
+reached k = 4 (0.06), and another team on the same public suite reports 28 % locally at
+k = 4 (ratio 1/4). The two ratios bracket 1/5: in round numbers, five public tasks are worth
+about one hidden task. We suggest the ratio is a property of *task
 distribution shift* (hidden repos are private), not of any particular agent, and that it should
 be reported explicitly when public benchmarks are used for selection.
 
