@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+title: "Every Tool Call Is a Token You Cannot Buy Back: nine design rules for a single small SWE agent"
+message: "If you use these artifacts, cite the Kaggle writeup for the Gemma 4 Developer Agent Paper Track."
+type: software
+authors:
+  - family-names: "Ando"
+    given-names: "Yoshihiro"
+    alias: "yosh95"
+version: "1.0.0"
+date-released: "2026-10-05"
+license: Apache-2.0
+url: "https://www.kaggle.com/competitions/gemma-4-developer-agent-paper"
+keywords:
+  - software engineering agents
+  - SWE-bench
+  - small language models
+  - agent evaluation
+  - tool-use cost accounting
